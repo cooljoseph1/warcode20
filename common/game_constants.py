@@ -1,0 +1,3 @@
+class GameConstants:
+    TREE_STARTING_HEALTH = 100
+    GOLD_MINE_STARTING_HEALTH = 100
