@@ -26,6 +26,9 @@ class Map:
         self.board = board
         self.name = name or "Unnamed Map"
 
+    def is_on_the_map(x, y):
+        return 0 <= x < self.width and 0 <= y < self.height
+
     def to_dict(self):
         return {
             "width": self.width,

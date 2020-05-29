@@ -2,7 +2,8 @@ from .team import Team
 from .type import Type
 
 class Robot:
-    def __init__(self, x, y, type, team, health=None):
+    def __init__(self, id, x, y, type, team, health=None):
+        self.id = id
         self.x = x
         self.y = y
         self.team = team
@@ -11,6 +12,7 @@ class Robot:
 
     def to_dict(self):
         return {
+            "id": self.id,
             "x": self.x,
             "y": self.y,
             "type": self.type.to_string(),
@@ -20,5 +22,5 @@ class Robot:
 
     @classmethod
     def from_dict(cls, dic):
-        return cls(dic["x"], dic["y"], Type.from_string(dic["type"]),
+        return cls(dic["id"], dic["x"], dic["y"], Type.from_string(dic["type"]),
                 Team.from_string(dic["team"]), dic["health"])
