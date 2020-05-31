@@ -30,7 +30,7 @@ class Game:
             self.create_player(robot)
             for robot in robots
         ]
-        
+
         self.gold = {"RED": GameConstants.STARTING_GOLD, "BLUE": GameConstants.STARTING_GOLD}
         self.wood = {"RED": GameConstants.STARTING_WOOD, "BLUE": GameConstants.STARTING_WOOD}
 
@@ -64,17 +64,6 @@ class Game:
             if robot.team is Team.RED else
             Player(self.player2_dir, self.language2, robot)
         )
-
-    def new_id(self, max=1000000):
-        """
-        Returns a new, random, (almost certainly) unique id.
-        """
-        for i in range(10):
-            id = random.randint(1, max)
-            if id not in ids_given:
-                ids_given.add(id)
-                return id
-        return random.randint(1, max)
 
     def run_turn(self):
         """
@@ -228,7 +217,7 @@ class Game:
         self.add_gold(player.robot.team, -type.gold_cost)
         self.add_wood(player.robot.team, -type.wood_cost)
 
-        new_robot = Robot(self.new_id(), x, y, player.robot.team, type)
+        new_robot = Robot(x, y, player.robot.team, type)
         new_player = self.create_player(new_robot)
         self.map.board[new_player.robot.y][new_player.robot.x] = new_player.robot.id
         self.players.append(new_player)

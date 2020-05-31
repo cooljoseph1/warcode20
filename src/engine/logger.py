@@ -12,13 +12,15 @@ class Logger:
             self.logline(player, line + "\n")
 
     def log_action(self, player, action):
+        """
+        Logs an action
+        """
         self.logline(player, "Action is '" + action + "'\n")
 
     def logline(self, player, line):
         """
         Logs a line.  Line should end in "\n"
         """
-
         self.output.write(player.robot.team.to_string() + " player " + str(player.robot.id) + "> " + line)
 
     def flush(self):

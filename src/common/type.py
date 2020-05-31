@@ -77,12 +77,19 @@ class Type:
     # Buildings
     HOUSE = _Building("HOUSE", 500, 300, 300, 100, 20)
 
+    ALL_TYPES = [
+        ARCHER,
+        HORSE,
+        PEASANT,
+        PIKE,
+        HOUSE,
+    ]
+
     _name_to_type = {
         "ARCHER": ARCHER,
         "HORSE": HORSE,
         "PEASANT": PEASANT,
         "PIKE": PIKE,
-
         "HOUSE": HOUSE,
     }
 
