@@ -1,4 +1,5 @@
 import json
+import os.path
 
 from ..common import Robot, GoldMine, Tree
 
@@ -33,8 +34,8 @@ class MapData:
 
     def save(self, file=None):
         self.save_file = file or self.save_file
-        with open(self.save_file) as f:
-            json.dump(self.to_dict())
+        with open(self.save_file, "w") as f:
+            json.dump(self.to_dict(), f)
 
     def to_dict(self):
         return {

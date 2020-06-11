@@ -1,9 +1,14 @@
 import tkinter
+from tkinter import filedialog, messagebox
+import os, os.path
+
 from ..common import Type, Team
 
 from .canvas import Canvas
 from .map_data import MapData
 from .popup import Popup
+
+_my_dir = os.path.dirname(os.path.realpath(__file__))
 
 class Window(tkinter.Tk):
     def __init__(self, *args, save_file=None, **kwargs):
@@ -16,6 +21,7 @@ class Window(tkinter.Tk):
         self.config(menu=self.menu)
 
         self.set_saved()
+        self.protocol("WM_DELETE_WINDOW", self.quit)
 
     def create_menu(self):
         menu = tkinter.Menu(self)
@@ -40,9 +46,9 @@ class Window(tkinter.Tk):
         file_menu.add_command(label="Save", underline=0, command=self.save, accelerator="Ctrl+S")
         self.bind_all("<Control-s>", self.save)
         file_menu.add_command(label="Save As", underline=5, command=self.save_as, accelerator="Ctrl+Shift+S")
-        self.bind_all("<Control-Shift-s>", self.save_as)
+        self.bind_all("<Control-S>", self.save_as)
         file_menu.add_command(label="Exit", underline=1, command=self.quit, accelerator="Ctrl+Shift+Q")
-        self.bind_all("<Control-Shift-q>", self.quit)
+        self.bind_all("<Control-Q>", self.quit)
 
         return file_menu
 
@@ -95,13 +101,20 @@ class Window(tkinter.Tk):
         if not self.unsaved_changes:
             return True
         else:
-            return messagebox.askokcancel(title, message)
+            return messagebox.askyesno(title, message)
 
     def new(self, event=None):
+        """
+        Create a new warcode map
+        """
+        if not self.check_unsaved("New"):
+            return
+
         def process_new(name, width, height):
             self.map_data = MapData(width=width, height=height, name=name)
             self.canvas.destroy()
             self.canvas = Canvas(self, self.map_data)
+            self.canvas.pack()
             self.set_saved()
 
         popup = Popup(
@@ -111,18 +124,78 @@ class Window(tkinter.Tk):
         )
 
     def open(self, event=None):
-        pass
+        """
+        Open a saved warcode map
+        """
+        if not self.check_unsaved("Open"):
+            return
+
+        if self.map_data.save_file:
+            initial_directory = os.path.dirname(self.map_data.save_file)
+        else:
+            initial_directory = os.path.abspath(os.path.join(_my_dir, os.pardir, os.pardir, "resources", "maps"))
+
+        mask = [("Warcode Maps", "*.wcm"), ("All Files", "*.*")]
+        file = filedialog.askopenfile(
+            initialdir=initial_directory,
+            filetypes=mask,
+            mode="r",
+        )
+        if file is None:
+            return
+
+        self.map_data.load(file.name)
+
+        self.canvas.destroy()
+        self.canvas = Canvas(self, self.map_data)
+        self.canvas.pack()
+
+        self.set_saved()
 
     def save(self, event=None):
-        pass
+        """
+        Save our file
+        """
+        if self.map_data.save_file:
+            self.map_data.save()
+            self.set_saved()
+            return
+
+        self.save_as()
 
     def save_as(self, event=None):
-        pass
+        """
+        Save our map as a different file
+        """
+        if self.map_data.save_file:
+            initial_directory = os.path.dirname(self.map_data.save_file)
+        else:
+            initial_directory = os.path.abspath(os.path.join(_my_dir, os.pardir, os.pardir, "resources", "maps"))
+
+        mask = [("Warcode Maps", "*.wcm"), ("All Files", "*.*")]
+        file = filedialog.asksaveasfile(
+            initialdir=initial_directory,
+            initialfile=self.map_data.name,
+            filetypes=mask,
+            defaultextension=".wcm",
+            mode="w",
+        )
+
+        if file is None:
+            return
+
+        self.map_data.save(file.name)
+        self.set_saved()
 
     def quit(self, event=None):
-        pass
+        """
+        Actions to be taken upon quiting
+        """
+        if self.check_unsaved("Quit"):
+            self.destroy()
 
     def set_square(self, x, y):
+        self.set_unsaved()
         tool = self.menu.tool_menu.tool.get()
         if tool == "Empty":
             self.map_data.set(x, y, " ")
