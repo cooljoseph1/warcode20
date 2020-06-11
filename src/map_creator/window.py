@@ -22,6 +22,7 @@ class Window(tkinter.Tk):
 
         self.set_saved()
         self.protocol("WM_DELETE_WINDOW", self.quit)
+        self.resizable(False, False)
 
     def create_menu(self):
         menu = tkinter.Menu(self)
@@ -41,6 +42,8 @@ class Window(tkinter.Tk):
 
         file_menu.add_command(label="New", underline=0, command=self.new, accelerator="Ctrl+N")
         self.bind_all("<Control-n>", self.new)
+        file_menu.add_command(label="Rename", underline=0, command=self.rename, accelerator="Ctrl+Shift+R")
+        self.bind_all("<Control-R>", self.rename)
         file_menu.add_command(label="Open", underline=0, command=self.open, accelerator="Ctrl+O")
         self.bind_all("<Control-o>", self.open)
         file_menu.add_command(label="Save", underline=0, command=self.save, accelerator="Ctrl+S")
@@ -121,6 +124,23 @@ class Window(tkinter.Tk):
             {"name": str, "width": int, "height": int},
             process_new,
             "New",
+        )
+
+    def rename(self, event=None):
+        """
+        Rename the map
+        """
+        def process_rename(name):
+            self.map_data.name = name
+            if self.unsaved_changes:
+                self.title("*" + name + "*")
+            else:
+                self.title(name)
+
+        popup = Popup(
+            {"name": str},
+            process_rename,
+            "Rename",
         )
 
     def open(self, event=None):
