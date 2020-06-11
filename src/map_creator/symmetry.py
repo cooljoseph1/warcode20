@@ -32,8 +32,8 @@ class Symmetry:
     _name_to_symmetry = {
         "Horizontal": HORIZONTAL,
         "Vertical": VERTICAL,
-        "UR_Diagonal": UR_DIAGONAL,
-        "DR_Diagonal": DR_DIAGONAL,
+        "UR Diagonal": UR_DIAGONAL,
+        "DR Diagonal": DR_DIAGONAL,
         "Radial": RADIAL,
     }
 

@@ -43,9 +43,9 @@ class MapData:
             "width": self.width,
             "height": self.height,
             "map": self.map,
-            "gold_mines": {id: gold_mine.to_dict() for id, gold_mine in self.gold_mines.items()},
-            "trees": {id: tree.to_dict() for id, tree in self.trees.items()},
-            "robots": {id: robot.to_dict() for id, robot in self.robots.items()},
+            "gold_mines": [gold_mine.to_dict() for gold_mine in self.gold_mines.values()],
+            "trees": [tree.to_dict() for tree in self.trees.values()],
+            "robots": [robot.to_dict() for robot in self.robots.values()],
         }
 
     def delete_square(self, x, y):

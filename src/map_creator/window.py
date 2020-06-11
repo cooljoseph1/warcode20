@@ -223,7 +223,8 @@ class Window(tkinter.Tk):
         tool = self.menu.tool_menu.tool.get()
         symmetry = self.menu.symmetry_menu.symmetry.get()
         locations = [(x, y), Symmetry.from_string(symmetry).apply(x, y, self.map_data.width, self.map_data.height)]
-        for (x, y) in locations:
+        teams = [Team.RED, Team.BLUE]
+        for (x, y), team in zip(locations, teams):
             if tool == "Empty":
                 self.map_data.set(x, y, " ")
             elif tool == "Wall":
@@ -233,6 +234,6 @@ class Window(tkinter.Tk):
             elif tool == "Tree":
                 self.map_data.add_tree(x, y)
             else:
-                self.map_data.add_robot(x, y, Type.from_string(tool.upper()), Team.RED)
-        
+                self.map_data.add_robot(x, y, Type.from_string(tool.upper()), team)
+
         self.canvas.update(locations)
