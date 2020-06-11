@@ -1,6 +1,7 @@
 from .type import Type
 
 class GameConstants:
+    MAX_ID = 10000000
     TREE_STARTING_HEALTH = 200
     GOLD_MINE_STARTING_HEALTH = 5000
 

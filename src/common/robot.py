@@ -2,19 +2,7 @@ import random
 
 from .team import Team
 from .type import Type
-
-
-_ids_given = set()
-def random_id(self, max=1000000):
-    """
-    Returns a new, random, (almost certainly) unique id.
-    """
-    for i in range(100):
-        id = random.randint(1, max)
-        if id not in _ids_given:
-            _ids_given.add(id)
-            return id
-    return random.randint(1, max)
+from .id import add_id, random_id
 
 class Robot:
     def __init__(self, x, y, type, team, health=None, id=None):
@@ -24,6 +12,7 @@ class Robot:
         self.type = type
         self.health = health or self.type.starting_health
         self.id = id or random_id()
+        add_id(self.id)
 
     def to_dict(self):
         return {
