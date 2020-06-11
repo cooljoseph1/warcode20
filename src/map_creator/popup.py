@@ -22,7 +22,7 @@ class Popup(tkinter.Toplevel):
 
         self.input_frame = tkinter.Frame(self)
 
-        for index, (field_name, field_type) in enumerate(self.fields.items()):
+        for index, (field_name, field_type) in enumerate(fields.items()):
             self.fields[field_name] = Field(self.input_frame, field_name, field_type)
             self.fields[field_name].pack(index)
 
@@ -36,8 +36,8 @@ class Popup(tkinter.Toplevel):
         ok_button.bind("<Return>", self.create_new)
         ok_button.grid(row=0, column=1)
 
-        input_frame.pack(padx=20, pady=20)
-        button_frame.pack(padx=20, pady=20, side="right")
+        self.input_frame.pack(padx=20, pady=20)
+        self.button_frame.pack(padx=20, pady=20, side="right")
 
     def cancel(self):
         self.destroy()
@@ -50,16 +50,16 @@ class Popup(tkinter.Toplevel):
         self.action(**values)
 
 class Field:
-    def __init__(self, root, field_name, field_type="str", font=_MEDIUM_FONT):
+    def __init__(self, root, field_name, field_type=str, font=_MEDIUM_FONT):
         """
         root:  root popup window
         field_name:  name of the field
-        field_type:  type of input.  Must be "str" or "int".
+        field_type:  conversion to use when getting input.  E.g. int, str
         font:  override font to use
         """
 
-        if field_type not in ("str", "int"):
-            raise ValueError("field_type must be one of 'str' or 'int'.")
+        if field_type not in (str, int):
+            raise ValueError("field_type must be str or int.")
 
         self.root = root
         self.field_name = field_name
@@ -74,11 +74,7 @@ class Field:
 
     def get(self):
         try:
-            if self.field_type == "str":
-                return self.entry.get()
-            if self.field_type == "int":
-                return int(self.entry.get())
-            return self.entry.get()
+            return self.field_type(self.entry.get())
         except:
             messagebox.showerror("Error", "Invalid " + self.field_name, master=self.entry)
             self.root.deiconify()

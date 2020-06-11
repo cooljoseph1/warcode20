@@ -14,9 +14,9 @@ class MapData:
         self.save_file = save_file
 
         self.map = [[" " for x in range(width)] for y in range(height)]
-        self.gold_mines = []
-        self.trees = []
-        self.robots = []
+        self.gold_mines = {}
+        self.trees = {}
+        self.robots = {}
 
     def load(self, file):
         self.save_file = file
@@ -46,3 +46,36 @@ class MapData:
             "trees": self.trees,
             "robots": self.robots,
         }
+
+    def delete_square(self, x, y):
+        """
+        Remove anything from the square that is there already.
+        """
+        current_value = self.map[y][x]
+        if isinstance(current_value, int):
+            self.gold_mines.pop(current_value, None)
+            self.trees.pop(current_value, None)
+            self.robots.pop(current_value, None)
+        self.map[y][x] = None
+
+    def set(self, x, y, value):
+        self.delete_square(x, y)
+        self.map[y][x] = value
+
+    def add_gold_mine(self, x, y):
+        self.delete_square(x, y)
+        gold_mine = GoldMine(x, y)
+        self.gold_mines[gold_mine.id] = gold_mine
+        self.map[y][x] = gold_mine.id
+
+    def add_tree(self, x, y):
+        self.delete_square(x, y)
+        tree = Tree(x, y)
+        self.trees[tree.id] = tree
+        self.map[y][x] = tree.id
+
+    def add_robot(self, x, y, robot_type, team):
+        self.delete_square(x, y)
+        robot = Robot(x, y, robot_type, team)
+        self.robots[robot.id] = robot
+        self.map[y][x] = robot.id

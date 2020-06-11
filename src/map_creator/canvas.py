@@ -37,7 +37,7 @@ class Canvas(tkinter.Canvas):
                 outline="black",
                 fill="white")
                 for x in range(self.map_data.width)
-            ] for y in range(self.map_data.width)
+            ] for y in range(self.map_data.height)
         ]
 
         self.bind("<Button 1>", self.mouse_click)
@@ -57,6 +57,9 @@ class Canvas(tkinter.Canvas):
 
     def mouse_click(self, event):
         x, y = self.scale_back(event.x, event.y)
+        if not (0 <= x < self.map_data.width and 0 <= y < self.map_data.height):
+            return # Invalid location
+
         self.root.set_square(x, y)
 
     def update(self):
@@ -71,10 +74,11 @@ class Canvas(tkinter.Canvas):
             return Canvas.COLORS["EMPTY"]
         if square == "W":
             return Canvas.COLORS["WALL"]
-        if square == "G":
-            return Canvas.COLORS["GOLD_MINE"]
-        if square == "T":
-            return Canvas.COLORS["TREE"]
         if isinstance(square, int):
-            team = self.map_data.robots[square].team
-            return Canvas.COLORS[team.to_string()]
+            if square in self.map_data.gold_mines:
+                return Canvas.COLORS["GOLD_MINE"]
+            if square in self.map_data.trees:
+                return Canvas.COLORS["TREE"]
+            if square in self.map_data.robots:
+                team = self.map_data.robots[square].team
+                return Canvas.COLORS[team.to_string()]

@@ -1,8 +1,9 @@
 import tkinter
-from ..common import Type
+from ..common import Type, Team
 
 from .canvas import Canvas
 from .map_data import MapData
+from .popup import Popup
 
 class Window(tkinter.Tk):
     def __init__(self, *args, save_file=None, **kwargs):
@@ -13,6 +14,8 @@ class Window(tkinter.Tk):
 
         self.menu = self.create_menu()
         self.config(menu=self.menu)
+
+        self.set_saved()
 
     def create_menu(self):
         menu = tkinter.Menu(self)
@@ -69,19 +72,43 @@ class Window(tkinter.Tk):
     def create_robot_menu(self, root):
         robot_menu = tkinter.Menu(root, tearoff=0)
 
-        robots = [type.name for type in Type.ALL_TYPES]
-        robot_menu.robot = tkinter.StringVar(robot_menu, robots[0])
+        robots = [type.name.title() for type in Type.ALL_TYPES]
         for robot in robots:
-            robot_menu.add_radiobutton(label=robot, underline=0, variable=robot_menu.robot)
+            robot_menu.add_radiobutton(label=robot, underline=0, variable=root.tool)
 
         return robot_menu
 
-    def set_name(self, name):
-        self.map_data.name = name
-        self.title(name)
+    def set_unsaved(self):
+        self.unsaved_changes = True
+        self.title("*" + self.map_data.name + "*")
+
+    def set_saved(self):
+        self.unsaved_changes = False
+        self.title(self.map_data.name)
+
+    def check_unsaved(self, title="Continue",
+            message="You still have unsaved changes. Are you sure you want to continue?"):
+        """
+        Checks with the user if they want to do an action even though they have
+        unsaved changes.
+        """
+        if not self.unsaved_changes:
+            return True
+        else:
+            return messagebox.askokcancel(title, message)
 
     def new(self, event=None):
-        pass
+        def process_new(name, width, height):
+            self.map_data = MapData(width=width, height=height, name=name)
+            self.canvas.destroy()
+            self.canvas = Canvas(self, self.map_data)
+            self.set_saved()
+
+        popup = Popup(
+            {"name": str, "width": int, "height": int},
+            process_new,
+            "New",
+        )
 
     def open(self, event=None):
         pass
@@ -96,4 +123,15 @@ class Window(tkinter.Tk):
         pass
 
     def set_square(self, x, y):
-        pass
+        tool = self.menu.tool_menu.tool.get()
+        if tool == "Empty":
+            self.map_data.set(x, y, " ")
+        elif tool == "Wall":
+            self.map_data.set(x, y, "W")
+        elif tool == "Gold Mine":
+            self.map_data.add_gold_mine(x, y)
+        elif tool == "Tree":
+            self.map_data.add_tree(x, y)
+        else:
+            self.map_data.add_robot(x, y, Type.from_string(tool.upper()), Team.RED)
+        self.canvas.update()

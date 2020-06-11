@@ -10,7 +10,7 @@ def add_id(id):
     """
     _ids_given.add(id)
 
-def random_id(self):
+def random_id():
     """
     Returns a new, random, (almost certainly) unique id.
     """

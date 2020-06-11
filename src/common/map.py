@@ -6,20 +6,19 @@ from .gold_mine import GoldMine
 from .robot import Robot
 
 """
-A Map is, well, a map.  It contains information about where gold, trees, and
+A Map is, well, a map.  It contains information about where gold mines, trees, and
 robots are.
 """
 
 class Map:
     def __init__(self, width, height, board, name=None):
         """
-        width:  width of the map
-        height:  height of the map
-        board:  2d array of things at different locations.
-                "T" = tree
-                "G" = gold_mine
+        width -- width of the map
+        height -- height of the map
+        board -- 2d array of things at different locations.
+                " " = empty
                 "W" = wall
-                int = id of robot
+                int = id of gold mine, tree, or robot
         """
         self.width = width
         self.height = height
