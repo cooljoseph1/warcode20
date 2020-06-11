@@ -39,20 +39,22 @@ class Popup(tkinter.Toplevel):
         self.input_frame.pack(padx=20, pady=20)
         self.button_frame.pack(padx=20, pady=20, side="right")
 
-    def cancel(self):
+    def cancel(self, event=None):
         self.destroy()
 
-    def create_new(self):
+    def create_new(self, event=None):
         values = {name: field.get() for name, field in self.fields.items()}
         if any(val is None for val in values.values()):
+            self.destroy()
             return
+        
         self.destroy()
         self.action(**values)
 
 class Field:
     def __init__(self, root, field_name, field_type=str, font=_MEDIUM_FONT):
         """
-        root:  root popup window
+        root:  root widget
         field_name:  name of the field
         field_type:  conversion to use when getting input.  E.g. int, str
         font:  override font to use
@@ -77,5 +79,4 @@ class Field:
             return self.field_type(self.entry.get())
         except:
             messagebox.showerror("Error", "Invalid " + self.field_name, master=self.entry)
-            self.root.deiconify()
             return None

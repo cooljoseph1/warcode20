@@ -7,6 +7,7 @@ from ..common import Type, Team
 from .canvas import Canvas
 from .map_data import MapData
 from .popup import Popup
+from .symmetry import Symmetry
 
 _my_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -215,16 +216,23 @@ class Window(tkinter.Tk):
             self.destroy()
 
     def set_square(self, x, y):
+        """
+        Set a square on the map using our current tool and symmetry
+        """
         self.set_unsaved()
         tool = self.menu.tool_menu.tool.get()
-        if tool == "Empty":
-            self.map_data.set(x, y, " ")
-        elif tool == "Wall":
-            self.map_data.set(x, y, "W")
-        elif tool == "Gold Mine":
-            self.map_data.add_gold_mine(x, y)
-        elif tool == "Tree":
-            self.map_data.add_tree(x, y)
-        else:
-            self.map_data.add_robot(x, y, Type.from_string(tool.upper()), Team.RED)
-        self.canvas.update()
+        symmetry = self.menu.symmetry_menu.symmetry.get()
+        locations = [(x, y), Symmetry.from_string(symmetry).apply(x, y, self.map_data.width, self.map_data.height)]
+        for (x, y) in locations:
+            if tool == "Empty":
+                self.map_data.set(x, y, " ")
+            elif tool == "Wall":
+                self.map_data.set(x, y, "W")
+            elif tool == "Gold Mine":
+                self.map_data.add_gold_mine(x, y)
+            elif tool == "Tree":
+                self.map_data.add_tree(x, y)
+            else:
+                self.map_data.add_robot(x, y, Type.from_string(tool.upper()), Team.RED)
+        
+        self.canvas.update(locations)

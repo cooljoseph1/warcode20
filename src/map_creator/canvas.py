@@ -62,7 +62,14 @@ class Canvas(tkinter.Canvas):
 
         self.root.set_square(x, y)
 
-    def update(self):
+    def update(self, changed_locations=None):
+        if changed_locations:
+            for (x, y) in changed_locations:
+                color = self.get_color(self.map_data.map[y][x])
+                if self.itemcget(self.squares[y][x], "fill") != color:
+                    self.itemconfig(self.squares[y][x], fill=color)
+            return
+
         for y in range(self.map_data.height):
             for x in range(self.map_data.width):
                 color = self.get_color(self.map_data.map[y][x])
