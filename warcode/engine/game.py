@@ -1,5 +1,6 @@
 import sys
 import random
+from collections import deque
 
 from ..common import Map, Team, load_map, GameConstants, Robot
 from .player import Player
@@ -24,12 +25,12 @@ class Game:
         self.language1 = language1
         self.language2 = language2
 
-        self.ids_given = {robot.id for robot in robots}
-
-        self.players = [
-            self.create_player(robot)
+        self.players = {
+            robot.id: self.create_player(robot)
             for robot in robots
-        ]
+        }
+
+        self.queue = deque(self.players)
 
         self.gold = {"RED": GameConstants.STARTING_GOLD, "BLUE": GameConstants.STARTING_GOLD}
         self.wood = {"RED": GameConstants.STARTING_WOOD, "BLUE": GameConstants.STARTING_WOOD}
@@ -172,7 +173,7 @@ class Game:
                     self.kill(player2)
 
         # Trees get harmed by attacks, but gold mines do not.
-        for tree in self.trees[:]:
+        for tree_id in self.:
             if (tree.x - x) ** 2 + (tree.y - y) ** 2 <= player.robot.damage_radius:
                 tree.health -= player.robot.attack_damage
                 if tree.health <= 0:

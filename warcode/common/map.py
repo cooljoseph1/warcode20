@@ -49,8 +49,8 @@ def load_map(file_path):
     data = json.load(file_path)
 
     map = Map.from_dict(data["map"])
-    trees = [Tree.from_dict(tree_info) for tree_info in data["trees"]]
-    gold_mines = [GoldMine.from_dict(gold_mine_info) for gold_mine_info in data["gold_mines"]]
-    robots = [Robot.from_dict(robot_info) for robot_info in data["robots"]]
+    trees = {tree_info["id"]: Tree.from_dict(tree_info) for tree_info in data["trees"]}
+    gold_mines = {gold_mine_info["id"]: GoldMine.from_dict(gold_mine_info) for gold_mine_info in data["gold_mines"]}
+    robots = {robot_info["id"]: Robot.from_dict(robot_info) for robot_info in data["robots"]}
 
     return (map, trees, gold_mines, robots)
