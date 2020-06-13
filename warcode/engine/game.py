@@ -75,10 +75,11 @@ class Game:
                 continue
             # Player gets x5 time on the first turn.
             time_multiplier = 5 if player.turns_taken == 0 else 1
-            action = player.run_turn(self.get_input(player.robot),
+            actions = player.run_turn(self.get_input(player.robot),
                                      time_limit=player.robot.type.time_limit * time_multiplier,
                                      debug=self.debug)
-            self.process_action(action, player.robot)
+            for action in actions.split(";"):
+                self.process_action(action, player.robot)
         self.remove_dead_players()
         self.check_over()
 
@@ -91,6 +92,8 @@ class Game:
             self.logger.log_action(action)
 
         tokens = action.strip().split()
+        if len(tokens) == 0:
+            return # Empty action.  Ignore.
         try:
             if tokens[0] == "ATTACK":
                 x, y = int(tokens[1]), int(tokens[2])
@@ -119,6 +122,8 @@ class Game:
             if tokens[0] == "TRAIN":
                 type = Type.from_string(tokens[1])
                 self.train(player, type)
+                return
+            if tokens[0] == "WAIT":
                 return
         finally:
             if self.logger:

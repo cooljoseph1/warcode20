@@ -69,13 +69,13 @@ class _Building(_Type):
 
 class Type:
     # Units
-    ARCHER = _Unit("ARCHER", 80, 0, 50, 150, 2, 80, 0, 10, 20)
-    HORSE = _Unit("HORSE", 150, 50, 100, 80, 5, 1, 0, 30, 20)
-    PEASANT = _Unit("PEASANT", 20, 0, 50, 60, 2, -1, -1, 0, 20)
-    PIKE = _Unit("PIKE", 100, 20, 150, 80, 1, 5, 0, 10, 20)
+    ARCHER = _Unit("ARCHER", 80, 50, 50, 150, 2, 80, 0, 10, 20)
+    HORSE = _Unit("HORSE", 150, 100, 100, 80, 5, 1, 0, 30, 20)
+    PEASANT = _Unit("PEASANT", 50, 20, 50, 60, 2, -1, -1, 0, 20)
+    PIKE = _Unit("PIKE", 100, 120, 150, 80, 1, 5, 0, 10, 20)
 
     # Buildings
-    HOUSE = _Building("HOUSE", 500, 300, 300, 100, 20)
+    HOUSE = _Building("HOUSE", 500, 800, 300, 100, 20)
 
     ALL_TYPES = [
         ARCHER,
